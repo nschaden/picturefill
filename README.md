@@ -8,7 +8,7 @@ A Responsive Images approach that you can use today that mimics the [proposed pi
 
 **Demo URL:** [http://scottjehl.github.com/picturefill/](http://scottjehl.github.com/picturefill/)
 
-A simple fork of Scott Jehl's original work with the small addition of a simple resolveLast() method to force images to be resolved before the DOM is ready. Credit for this is idea stems from [Tyson Matanich](http://matanich.com/) and his [forked branch](https://github.com/tysonmatanich/picturefill); I just reimplemented the process to match Jehl's latest code base.
+A simple fork of Scott Jehl's original work with the small addition of a simple resolveLast() method to force images to be resolved before the DOM is ready. Credit for this idea stems from [Tyson Matanich](http://matanich.com/) and his [forked branch](https://github.com/tysonmatanich/picturefill); I just reimplemented the process to match Jehl's latest code base.
 
 **Note:** Picturefill works best in browsers that support CSS3 media queries. The demo page references (externally) the [matchMedia polyfill](https://github.com/paulirish/matchMedia.js/) which makes matchMedia work in `media-query`-supporting browsers that don't support `matchMedia`. `matchMedia` and the `matchMedia` polyfill are not required for `picturefill` to work, but they are required to support the `media` attributes on `picture` `source` elements. In non-media query-supporting browsers, the `matchMedia` polyfill will allow for querying native media types, such as `screen`, `print`, etc.
 
@@ -96,7 +96,7 @@ Picturefill natively supports HD(Retina) image replacement.  While numerous othe
 
 ### Resolving images before DOM ready
 
-The core Picturefill logic is extremely robust but one potential weakness is the "pop in" effect. If you have a lot of content around your `data-picture` elements items can appear to "shift" right after the page loads, because naturally the JS logic kicks in on DOM ready. To kick in the Picturefill logic early, make sure picturefill.js is referenced above your content (`<head>` or the top of the `<body>`) and utilize the `resolveLast()` method directly after the picture element.
+The core Picturefill logic is extremely robust but one potential weakness is the "pop in" effect. If you have a lot of content around your `data-picture` elements they can appear to "shift" right after the page loads because naturally the JS logic that actually inserts the final imagery kicks in on DOM ready. You can try to handle this subtly by setting initial minimum dimensions for the `data-picture` elements, but it's a rough solution. The most definitive solution is to kick in the Picturefill logic early; make sure picturefill.js is referenced above your content (`<head>` or the top of the `<body>`) and utilize the `resolveLast()` method directly after the picture element.
 
 ```html
 	<span data-picture data-alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia">
@@ -113,7 +113,7 @@ The core Picturefill logic is extremely robust but one potential weakness is the
 	<script type="text/javascript">window.picturefill.resolveLast();</script>
 ```
 
-This method forces Picturefill to resolve the last `data-picture` present in the DOM. Note by adding a boolean `data-defer` attribute to any `data-picture` element you can prevent its image resolution until the body onload event. 
+This method forces Picturefill to resolve the last `data-picture` present in the DOM. Note by adding a boolean `data-defer` attribute to any `data-picture` element you can prevent its image resolution until the body onload event.
 
 ### Supporting IE Desktop
 
