@@ -2,16 +2,19 @@
 A Responsive Images approach that you can use today that mimics the [proposed picture element](http://www.w3.org/TR/2013/WD-html-picture-element-20130226/) using `span`s, for safety sake.
 
 
-* Author: Scott Jehl (c) 2012
+* Author: Nick Schaden - [http://nickschaden.com](http://nickschaden.com)
+* Original Author: Scott Jehl
 * License: MIT/GPLv2
 
 **Demo URL:** [http://scottjehl.github.com/picturefill/](http://scottjehl.github.com/picturefill/)
+
+A simple fork of Scott Jehl's original work with the small addition of a simple resolveLast() method to force images to be resolved before the DOM is ready. Credit for this is idea stems from [Tyson Matanich](http://matanich.com/) and his [forked branch](https://github.com/tysonmatanich/picturefill); I just reimplemented the process to match Jehl's latest code base.
 
 **Note:** Picturefill works best in browsers that support CSS3 media queries. The demo page references (externally) the [matchMedia polyfill](https://github.com/paulirish/matchMedia.js/) which makes matchMedia work in `media-query`-supporting browsers that don't support `matchMedia`. `matchMedia` and the `matchMedia` polyfill are not required for `picturefill` to work, but they are required to support the `media` attributes on `picture` `source` elements. In non-media query-supporting browsers, the `matchMedia` polyfill will allow for querying native media types, such as `screen`, `print`, etc.
 
 ## Size and delivery
 
-Currently, `picturefill.js` compresses to around 498bytes (~0.5kb), after minify and gzip. To minify, you might try these online tools: [Uglify]:(http://marijnhaverbeke.nl/uglifyjs), [Yahoo Compressor]:(http://refresh-sf.com/yui/), or [Closure Compiler](http://closure-compiler.appspot.com/home). Serve with gzip compression.
+To minify, you might try these online tools: [Uglify]:(http://marijnhaverbeke.nl/uglifyjs), [Yahoo Compressor]:(http://refresh-sf.com/yui/), or [Closure Compiler](http://closure-compiler.appspot.com/home). Serve with gzip compression.
 
 ## Markup pattern and explanation
 
@@ -32,8 +35,6 @@ Mark up your responsive images like this.
 ```
 
 Each `span[data-src]` element’s `data-media` attribute accepts any and all CSS3 media queries—such as `min` or `max` width, or even `min-resolution` for HD (retina) displays. 
-
-**NOTE:** if you need/prefer to use `div`s in your picturefill markup, you may want to grab v1.0.0: https://github.com/scottjehl/picturefill/tree/v1.0.0 . The current version here made the switch to `span` to better mimic an `img` element's inline nature, as well as fix a bug or two for wordpress users.
 
 ### Explained...
 
@@ -92,6 +93,27 @@ Picturefill natively supports HD(Retina) image replacement.  While numerous othe
 ```
 
 * Note: Supporting this many breakpoints quickly adds size to the DOM and increases implementation and maintenance time, so use this technique sparingly.
+
+### Resolving images before DOM ready
+
+The core Picturefill logic is extremely robust but one potential weakness is the "pop in" effect. If you have a lot of content around your `data-picture` elements items can appear to "shift" right after the page loads, because naturally the JS logic kicks in on DOM ready. To kick in the Picturefill logic early, make sure picturefill.js is referenced above your content (`<head>` or the top of the `<body>`) and utilize the `resolveLast()` method directly after the picture element.
+
+```html
+	<span data-picture data-alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia">
+		<span data-src="small.jpg"></span>
+		<span data-src="medium.jpg"     data-media="(min-width: 400px)"></span>
+		<span data-src="large.jpg"      data-media="(min-width: 800px)"></span>
+		<span data-src="extralarge.jpg" data-media="(min-width: 1000px)"></span>
+
+		<!-- Fallback content for non-JS browsers. Same img src as the initial, unqualified source element. -->
+		<noscript>
+			<img src="external/imgs/small.jpg" alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia">
+		</noscript>
+	</span>
+	<script type="text/javascript">window.picturefill.resolveLast();</script>
+```
+
+This method forces Picturefill to resolve the last `data-picture` present in the DOM. Note by adding a boolean `data-defer` attribute to any `data-picture` element you can prevent its image resolution until the body onload event. 
 
 ### Supporting IE Desktop
 
