@@ -42,9 +42,15 @@
 				picImg = w.document.createElement( "img" );
 				picImg.alt = element.getAttribute( "data-alt" );
 			}
+			else if( matchedEl === picImg.parentNode ){
+				// Skip further actions if the correct image is already in place
+				return;
+			}
 
 			picImg.src =  matchedEl.getAttribute( "data-src" );
 			matchedEl.appendChild( picImg );
+			picImg.removeAttribute("width");
+			picImg.removeAttribute("height");
 		}
 		else if( picImg ){
 			picImg.parentNode.removeChild( picImg );
